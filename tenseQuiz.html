@@ -1,0 +1,687 @@
+<html>
+<head>
+<title>Take an English tense quiz!</title>
+
+<style>
+
+body {
+  background-color: #DFEFFF;
+}
+
+span {
+font: #000000;
+font-size: 24px;
+display: inline-block;
+}
+
+#wholescreen {
+  background-color: #0F0;
+/* background-image: linear-gradient(#48ACFF, #FFFFFF 50%); */
+position: absolute;
+left: 0%;
+width: 100%;
+/* height: 100%; */
+top: 0px;
+}
+
+#title {
+  display: block;
+  color: #000000;
+  background-color: #FFFFFF8F;
+  font: bold 36pt Arial;
+  position: absolute;
+  left: 20%;
+  top: 5vh;
+  border-radius: 15px;
+  padding: 10px 25px 10px 25px;
+}
+
+#homeMonkey1 {
+  position: absolute;
+  left: 5vw;
+  bottom: 10vh;
+  width: 25vw;
+}
+
+#titleMonkey2 {
+  position: absolute;
+  left: 40vw;
+  top: 135vh;
+  width: 25vw;
+  animation-name: titleMonkey2RiseFall;
+  animation-duration: 3s;
+  animation-iteration-count: infinite;
+}
+
+@keyframes titleMonkey2RiseFall {
+  0%    {top: 135vh;}
+  50%   {top: 52vh;}
+  100%  {top: 135vh;}
+}
+
+.mainMenuButtonLeft {
+  position: absolute;
+  background-color: #66BBFF;
+  text-align: center;
+  font: 30pt Arial;
+  border-radius: 15px;
+  left: 10%;
+  padding: 10px 25px 10px 25px;
+}
+
+.mainMenuButtonRight {
+  position: absolute;
+  background-color: #66BBFF;
+  text-align: center;
+  font: 30pt Arial;
+  border-radius: 15px;
+  left: 60%;
+  top: 30vh;
+  padding: 10px 25px 10px 25px;
+}
+
+#buttonJustPast {
+  top: 30vh;
+}
+
+#buttonJustParticiple {
+  top: 48vh;
+}
+
+#buttonBoth {
+  top: 66vh;
+}
+
+#questionDiv {
+  display: none;
+  position: absolute;
+  text-align: center;
+  font: bold 36pt Arial;
+  left: 15%;
+  top: 10vh;
+}
+
+#answerDiv {
+  display: none;
+  position: absolute;
+  font: bold 36pt Arial;
+  color: #00D;
+  left: 15%;
+  top: 25vh;
+  height: 1em;
+  width: 10em;
+}
+
+span {
+  font: bold 36pt Arial;
+}
+
+#animalPic {
+  display: none;
+  position: absolute;
+  left: 2.5vw;
+  top: 51.66667vh;
+  height: 33.333vh;
+  max-width: 25vw;
+}
+
+table {
+  border: 1px solid black;
+  border-collapse: collapse;
+  margin-bottom: 30px;
+  font: bold 20pt Arial;
+  background-color: #FFF;
+}
+
+tr {
+  height: 50px;
+}
+
+td {
+  border: 1px solid black;
+  border-collapse: collapse;
+  padding: 0px 15px 0px 15px;
+}
+
+#completeChart{
+  display: none;
+  position: absolute;
+  left: 30%;
+  top: 8vh;
+}
+
+.presentColumn {
+  width: 10vw;
+}
+
+.pastColumn {
+  width: 10vw;
+}
+
+.participleColumn {
+  width: 10vw;
+}
+
+.DNE {
+  background-color: #000;
+}
+
+#exampleSentence {
+  display: block;
+  position: fixed;
+  top: 50%;
+  left: 2%;
+  width: 28%;
+  color: #000;
+  font: italic 24pt "Times";
+}
+
+#brownButton {
+    width: 2.5vw;
+    height: 3vh;
+    background-color: #906030;
+    position: absolute;
+    right: 0;
+    top: 50vh;
+}
+
+#greenButton {
+  width: 2.5vw;
+  height: 3vh;
+  background-color: #70C040;
+  position: absolute;
+  right: 0;
+  top: 53vh;
+}
+
+#blueButton {
+  width: 2.5vw;
+  height: 3vh;
+  background-color: #4070C0;
+  position: absolute;
+  right: 0;
+  top: 56vh;
+}
+
+</style>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+</head>
+
+<script>
+
+var randomWordNumber = 0;
+var playMode = 0;
+
+var playCodeDict = ["past","participle","both"];
+var previousCell;
+var previousCellPreviousColor = '';
+var activeCell;
+var whatToWriteIn;
+
+var mostWantedVerbs = ["bid","bind","cast","cleave","forsake","grind","kneel","knit","lend","light","mow","plead","prove","rend","rid","sew","shear","slay","sling","slink","slit","smite","sow","strew","string","strive","swell","thrust","wind","wring"];
+
+var animalOrders = ["aardvarks et al.","hyraxes/elephants/dugongs/manatees","sloth/anteaters","armadillos","primates","rabbit","rodents","shrews/hedgehogs/moles","bats","pangolins","carnivores","whales/pigs/cattle/deer/giraffes","horses/donkeys/zebras/tapirs/rhinos","kangaroo","platypus","birds","snake","alligators/crocodiles","lizards","turtles","frog","salamanders","XXXXXXXXXXXXXXXXXXXXXXXXXXX","jellyfish","starfish","horseshoe crabs/scorpions/daddy long legs/spiders/mites/ticks","roly-polies/krill/decapods(crabs, lobsters, shrimp)","Insect","snails","slugs","bivalves","cephalopods","earthworms"];
+
+var animalsUsed = ["aardvark","elephant","sloth","armadillo","tarsier","rabbit","squirrel","capybara","hedgehog","bat","pangolin","dogx3","cat","polar bear","fennec fox","skunk","whale","dolphin","pig","cow","camel","horse","kangaroo","platypus","seagull","parrot","owl","pigeon","penguin","generic bird","snake","alligator","turtle","frog","lizard","fish","lantern fish","caterpillar","bee","spider","dragon"];
+
+var whatsLeft = ["be","bear","beat","begin","bid","bind","bleed","break","bring","build","buy","can***","cast","choose","cleave***","come","cost","cut","deal","do","draw","dream***","dwell***","eat","fall","flee","forbid","forget","forsake","get","give","go","grind","grow","hang*","have","hide","hold","hurt","keep","kneel","knit***","know","lead","lean***","leave","lend","let","lie","light","make","may***","mean","meet","mow","plead","prove","put","read","rend","rid***","ride","ring","rise","say","see","seek","sell","send","set","sew","shake","shall***","shear***","shed","shit***","shoot","show","shrink","shut","sink","sit","slay","sleep","slide","sling","slink","slit","smite","sneak***","sow","speed","spell***","spend","spill***","spin","split","spoil***","spread","spring","stand","steal","stick","strew","stride","string","strive***","swear","sweat***","sweep","swell","take","tear","tell","think","throw","thrust***","tread","wake","wear","wed***","weep","will***","win","wind","wring***","write"];
+
+var presentDict = ["be","bear","beat","begin","bend","bet","bid","bind","bite","bleed","blow","break","breed","bring","build","burn*","burst","buy","can*","cast","catch","choose","cleave*","cling","come","cost","creep*","cut","deal","dig","dive*","do","draw","dream*","drink","drive","dwell*","eat","fall","feed","feel","fight","find","fit*","flee","fling","fly","forbid","forget","forsake","freeze","get*","give","go","grind","grow","hang*","have","hear","hide","hit","hold","hurt","keep","kneel*","knit*","know","lay","lead","lean*","leap*","learn*","leave","lend","let","lie","light*","lose","make","may*","mean","meet","mow*","must*","ought*","plead","prove","put","quit","read","rend","rid*","ride","ring","rise","run","say","see","seek","sell","send","set","sew","shake","shall*","shear*","shed","shine*","shit*","shoot","show","shrink","shut","sing","sink","sit","slay","sleep","slide","sling","slink","slit","smell*","smite","sneak*","sow","speak","speed","spell*","spend","spill*","spin","spit*","split","spoil*","spread","spring","stand","steal","stick","sting","stink","strew","stride","strike","string","strive*","swear","sweat*","sweep","swell","swim","swing","take","teach","tear","tell","think","thrive","throw","thrust*","tread","wake","wear","weave","wed*","weep","wet*","will*","win","wind","wring*","write"];
+
+var exampleSentenceArray = ["BE","BEAR","BEAT","BEGIN","I ____ myself into funny shapes.","I ___ all my chips!","BID","BIND","I think I ____ harder than you!","BLEED","I ___ some bubbles.","BREAK","We ___ like...well, like us!","BRING","BUILD","BURN","I ___ my balloon :(","BUY","CAN","CAST","I ____ you!","CHOOSE","CLEAVE","I ___ to this branch all day!","COME","COST","I ___ around to find leaves.","CUT","DEAL","See what I ___ up!","DIVE","DO","DRAW","DREAM","Mmm, I ___ some bubble tea.","DRIVE","DWELL","EAT","FALL","I ___ this worm to my babies.","I ___ hungry.","This is how I ___.","Ooh, I ___ a lizard!","These pants ___ me well, don't you think?","FLEE","I ___ this frisbee as far as possible.","FLY","FORBID","FORGET","FORSAKE","I ___ my food to keep it fresh.","GET","GIVE","GO","GRIND","GROW","HANG","HAVE","Hey, I ___ that!","HIDE","Look, I ___ the ball!","HOLD","HURT","KEEP","KNEEL","KNIT","KNOW","I ___ an egg from time to time.","LEAD","LEAN","I ___ into a pond.","I ___ a lot from this assignment.","LEAVE","LEND","LET","LIE","LIGHT","I ___ my tail but it'll grow back!","MAKE","MAY*","MEAN","MEET","MOW*","xxx","xxx","PLEAD","PROVE","PUT","I'm sick of this job, so I ___!","READ","REND","RID*","RIDE","RING","RISE","RUN","SAY","SEE","SEEK","SELL","SEND","SET","SEW","SHAKE","SHALL*","SHEAR*","SHED","SHINE","SHIT","SHOOT","SHOW","SHRINK","SHUT","SING","SINK","SIT","SLAY","SLEEP","SLIDE","SLING","SLINK","SLIT","What's that I ___?","SMITE","SNEAK*","SOW","SPEAK","SPEED","SPELL*","SPEND","SPILL*","SPIN","I ___ at you!","SPLIT","SPOIL*","SPREAD","SPRING","STAND","STEAL","STICK","STING","STINK","STREW","STRIDE","I ___ out :(","STRING","STRIVE*","SWEAR","SWEAT*","SWEEP","SWELL","I ___ across the ocean.","I ___ from vines for fun!","TAKE","TEACH","TEAR","TELL","THINK","We ___ in this harsh climate!","THROW","THRUST*","TREAD","WAKE","WEAR","I ___ a web to catch my food.","WED*","WEEP","I ___ the bed :(","WILL","WIN","WIND","WRING","WRITE"];
+
+var pastDict = ["was","bore","beat","began","bent","bet","bid","bound","bit","bled","blew","broke","bred","brought","built","burnt|burned","burst","bought","could","cast","caught","chose","clove|cleft","clung","came","cost","creeped|crept","cut","dealt","dug","dived|dove","did","drew","dreamed|dreamt","drank","drove","dwelt|dwelled","ate","fell","fed","felt","fought","found","fit|fitted","fled","flung","flew","forbade","forgot","forsook","froze","got","gave","went","ground","grew","hanged|hung","had","heard","hid","hit","held","hurt","kept","knelt|kneeled","knit|knitted","knew","laid","led","leaned|leant","leaped|leapt","learned|learnt","left","lent","let","lay","lit|lighted","lost","made","might","meant","met","mowed","must","ought","pled|pleaded","proved","put","quit","read","rent","rid|ridded","rode","rang","rose","ran","said","saw","sought","sold","sent","set","sewed","shook","should","sheared|shore","shed","shone|shined","shat","shot","showed","shrank","shut","sang","sank","sat","slew","slept","slid","slung","slunk","slit","smelled|smelt","smote","sneaked|snuck","sowed","spoke","sped|speeded","spelled|spelt","spent","spilled|spilt","spun","spat","split","spoiled|spoilt","spread","sprang","stood","stole","stuck","stung","stank","strewed","strode","struck","strung","strived|strove","swore","sweat|sweated","swept","swelled","swam","swung","took","taught","tore","told","thought","thrived|throve","threw","thrust|thrusted","trod","woke","wore","wove","wed|wedded","wept","wet|wetted","would","won","wound","wrang|wrung","wrote"];
+
+var participleDict = ["been","borne","beaten","begun","bent","bet","bid","bound","bitten","bled","blown","broken","bred","brought","built","burnt|burned","burst","bought","***","cast","caught","chosen","cloven|cleft","clung","come","cost","crept|creeped","cut","dealt","dug","dived","done","drawn","dreamt|dreamed","drunk","driven","dwelt|dwelled","eaten","fallen","fed","felt","fought","found","fit|fitted","fled","flung","flown","forbidden","forgotten","forsaken","frozen","got|gotten","given","gone","ground","grown","hanged|hung","had","heard","hidden","hit","held","hurt","kept","knelt|kneeled","knit|knitted","known","laid","led","leant|leaned","leapt|leaped","learnt|learned","left","lent","let","lain","lit|lighted","lost","made","***","meant","met","mowed|mown","***","***","pled|pleaded","proven|proved","put","quit","read","rent","rid|ridded|ridden","ridden","rung","risen","run","said","seen","sought","sold","sent","set","sewn|sewed","shaken","***","shorn|sheared","shed","shone|shined","shat|shit|shitted","shot","shown|showed","shrunk","shut","sung","sunk","sat","slain","slept","slid","slung","slunk","slit","smelt|smelled","smitten","snuck|sneaked","sown|sowed","spoken","sped|speeded","spelt|spelled","spent","spilt|spilled","spun","spat","split","spoilt|spoiled","spread","sprung","stood","stolen","stuck","stung","stunk","strewn|strewed","strode|stridden","stricken|struck","strung","striven|strived","sworn","sweat|sweated","swept","swollen","swum","swung","taken","taught","torn","told","thought","thriven|thrived","thrown","thrust|thrusted","trodden|trod","woken","worn","woven","wed|wedded","wept","wet|wetted","***","won","wound","wrung","written"];
+
+var alternateDict = {};
+
+var combinedDict = [0, presentDict, pastDict, participleDict];
+
+function goDo(playCode) {
+
+  playMode = playCodeDict[playCode];
+
+  document.getElementById("title").style.display = "none";
+  document.getElementById("buttonJustPast").style.display = "none";
+  document.getElementById("buttonJustParticiple").style.display = "none";
+  document.getElementById("buttonBoth").style.display = "none";
+  document.getElementById("buttonChart").style.display = "none";
+
+  //document.getElementById("wholescreen").style.backgroundImage = "url('img/other/bkgd.png')";
+
+  document.getElementById("questionDiv").style.display = "block";
+  document.getElementById("answerDiv").style.display = "block";
+  document.getElementById("answerDiv").innerHTML = "";
+  document.getElementById("animalPic").style.display = "block";
+
+  var dictionarySize = presentDict.length;
+  randomWordNumber = Math.floor(Math.random()*dictionarySize);
+  var randomWord = presentDict[randomWordNumber];
+
+  document.getElementById("questionDiv").innerHTML = presentDict[randomWordNumber];
+  getAnimalPic(presentDict[randomWordNumber]);
+}
+
+
+
+
+
+function getAnimalPic(verb) {
+  verb = verb.replace("*","");
+  document.getElementById("animalPic").src = "img/" + verb + ".png";
+}
+
+
+
+function goChart() {
+
+  document.getElementById("body").style.backgroundColor = "#FFF";
+  document.getElementById("title").style.display = "none";
+  document.getElementById("buttonJustPast").style.display = "none";
+  document.getElementById("buttonJustParticiple").style.display = "none";
+  document.getElementById("buttonBoth").style.display = "none";
+  document.getElementById("buttonChart").style.display = "none";
+
+
+  document.getElementById("completeChart").style.display = "block";
+  document.getElementById("animalPic").style.display = "block";
+  document.getElementById("animalPic").style.position = "fixed";
+  document.getElementById("animalPic").style.top = "10vh";
+  document.getElementById("answerDiv").innerHTML = "";
+
+  for (var i = 0; i < presentDict.length; i++) {          // this builds the chart
+      var realVerb = presentDict[i].replace("*","");
+      var row = document.createElement("tr");
+      var cell1 = document.createElement("td");
+      var cell2 = document.createElement("td");
+      var cell3 = document.createElement("td");
+      cell1.setAttribute('class','presentColumn');
+      cell1.setAttribute('id',realVerb+'1');
+      cell1.innerHTML = presentDict[i];
+      cell2.setAttribute('class','pastColumn');
+      cell2.setAttribute('id',realVerb+'2');
+      cell2.setAttribute('onclick','makeActiveCell(this)');
+      cell3.setAttribute('class','participleColumn');
+      cell3.setAttribute('id',realVerb+'3');
+      cell3.setAttribute('onclick','makeActiveCell(this)');
+      row.appendChild(cell1);
+      row.appendChild(cell2);
+      row.appendChild(cell3);
+      document.getElementById("completeChart").appendChild(row);
+  }
+
+  // some forms don't exist; they need to be colored black.
+  document.getElementById("can3").style.backgroundColor = "#000";
+  document.getElementById("shall3").style.backgroundColor = "#000";
+  document.getElementById("may3").style.backgroundColor = "#000";
+  document.getElementById("will3").style.backgroundColor = "#000";
+  document.getElementById("ought2").style.backgroundColor = "#000";
+  document.getElementById("ought3").style.backgroundColor = "#000";
+  document.getElementById("must2").style.backgroundColor = "#000";
+  document.getElementById("must3").style.backgroundColor = "#000";
+
+}
+
+function makeActiveCell(thisCell) {
+    if (thisCell.style.backgroundColor != "rgb(0, 0, 0)") {     // if the cell just clicked on is not black...
+        if (previousCell && previousCell.style.backgroundColor == "rgb(255, 255, 0)") {     // if the cell just clicked on is yellow
+            previousCell.style.backgroundColor = previousCellPreviousColor;
+        }
+        previousCellPreviousColor = thisCell.style.backgroundColor;
+        previousCell = thisCell;    // now, forget the cell before the current one; make this cell the "previous cell"
+        thisCell.style.backgroundColor = "#FF0";    // color this cell yellow
+        activeCell = thisCell;
+    }
+    getAnimalPic(activeCell.id.slice(0,-1));
+    showExampleSentence(activeCell.id);
+    if (activeCell.getBoundingClientRect().y > window.innerHeight*0.9) {
+        window.scrollBy(0, 200);
+    }
+    if (activeCell.getBoundingClientRect().y < 0) {
+        window.scrollBy(0, -200);
+    }
+}
+
+function showExampleSentence(verb) {
+    verb = verb.replace("2","*");
+    verb = verb.replace("3","*");
+    document.getElementById("exampleSentence").innerHTML = exampleSentenceArray[presentDict.indexOf(verb)];
+    if (presentDict.indexOf(verb) == -1) {
+        verb = verb.slice(0,-1);
+        document.getElementById("exampleSentence").innerHTML = exampleSentenceArray[presentDict.indexOf(verb)];
+    }
+}
+
+
+
+// THIS is where the magic happens--what to do when the user presses a key...
+
+$(document).keypress(function(event) {
+  if (document.getElementById("completeChart").style.display == "block") {
+      whatToWriteIn = activeCell;
+  } else {
+      whatToWriteIn = document.getElementById("answerDiv");
+  }
+  if (whatToWriteIn.style.textDecoration == "line-through") {
+      whatToWriteIn.innerHTML = "";
+      whatToWriteIn.style.textDecoration = "none";
+      if (document.getElementById("completeChart").style.display == "block") {
+          whatToWriteIn.style.color = "#000"; }
+      else {
+          whatToWriteIn.style.color = "#00D";
+      }
+  }
+  if (document.getElementById("answerDiv").innerHTML.includes("✓") && document.getElementById("row2").style.textDecoration == "line-through") {
+      document.getElementById("row2").innerHTML = "";
+      document.getElementById("row2").style.textDecoration = "none";
+      document.getElementById("row2").style.color = "#00D";
+  }
+  if(event.which >= 65 && event.which <= 122) {     // if the input is A-Z or a-z...
+      //alert('You pressed enter!');
+      //console.log(event.which);
+      if (document.getElementById("answerDiv").innerHTML.includes("✓")) {
+          document.getElementById("row2").innerHTML += String.fromCharCode(event.which);
+      } else {
+          whatToWriteIn.innerHTML += String.fromCharCode(event.which);
+      }
+  }
+
+
+  else if (event.which == 13) {   // if the user presses the ENTER key...
+      if (document.getElementById("completeChart").style.display == "block") {    // if the user is filling in the chart...
+          let verb = activeCell.id.slice(0,-1);     // slicing off the final number in the id
+          if (["burn","can","cleave","creep","dive","dream","dwell","fit","get","hang","kneel","knit","lean","leap","learn","light","may","mow","must","ought","rid","shall","shear","shine","shit","smell","sneak","spell","spill","spit","spoil","strive","sweat","thrust","wed","wet","will","wring"].includes(verb) ) {
+              verb = verb + "*";
+          }
+          //alert(verb);
+          if (answerIsCorrect(whatToWriteIn.innerHTML,combinedDict[activeCell.getAttribute("id").slice(-1)][presentDict.indexOf(verb) ]) ) {
+              activeCell.style.backgroundColor = "#DFB";      // is the answer is right, turn the background green, and...
+              jumpToNextEmptyCell();
+          } else {
+              activeCell.style.color = "#F00";    // if the answer is wrong, turn the text red...
+              activeCell.style.textDecoration = "line-through";   // and strike it through
+          }
+      }
+
+
+      if (playMode == "both") {   // if user is playing one-by-one, with both past and past participle
+          if (document.getElementById("answerDiv").innerHTML.endsWith(participleDict[randomWordNumber] + "</span>") ) {
+              goDo(playCodeDict.indexOf(playMode));
+          } else if (document.getElementById("answerDiv").innerHTML == pastDict[randomWordNumber]) {
+              document.getElementById("answerDiv").innerHTML += " ✓<br><span id='row2'>";
+          } else if (document.getElementById("answerDiv").innerHTML.includes("✓")) {
+              document.getElementById("row2").style.color = "#FF0000";
+              document.getElementById("row2").style.textDecoration = "line-through";
+          } else {
+            document.getElementById("answerDiv").style.color = "#FF0000";
+            document.getElementById("answerDiv").style.textDecoration = "line-through";
+          }
+      } else if (   (document.getElementById("answerDiv").innerHTML == pastDict[randomWordNumber] && playMode == "past") || (document.getElementById("answerDiv").innerHTML == participleDict[randomWordNumber] && playMode == "participle")     ) {
+          //console.log(playCodeDict.findIndex(playMode));
+          goDo(playCodeDict.indexOf(playMode));
+      } else {
+          document.getElementById("answerDiv").style.color = "#FF0000";
+          document.getElementById("answerDiv").style.textDecoration = "line-through";
+      }
+  }
+
+
+  else if (event.which == 8) {
+  }
+  else {
+      document.getElementById("answerDiv").innerHTML += String.fromCharCode(event.which);
+  }
+});
+
+function getKeyByValue(object, value) {
+  return Object.keys(object).find(key => object[key] === value);
+}
+
+function answerIsCorrect(userInput,rawCorrectString) {
+    if (userInput == rawCorrectString) {
+        return true;
+    }
+    else if (rawCorrectString.includes("|") ) {
+        rawCorrectString = rawCorrectString.split("|");
+        if (rawCorrectString.includes(userInput)) {
+            return true;
+        }
+    }
+    return false;
+}
+
+function jumpToNextEmptyCell() {
+  var allCells = document.getElementsByTagName("td");
+  var nextEmptyCellIndex = getKeyByValue(allCells,activeCell);
+  do {
+      nextEmptyCellIndex++;
+  }
+  while ((allCells[nextEmptyCellIndex].style.backgroundColor != "rgb(255, 255, 255)" && allCells[nextEmptyCellIndex].style.backgroundColor) || nextEmptyCellIndex%3 == 0);
+  makeActiveCell(allCells[nextEmptyCellIndex]);
+}
+
+function jumpDownACell() {
+  var allCells = document.getElementsByTagName("td");
+  var nextCellDownIndex = parseInt(getKeyByValue(allCells,activeCell));
+  do {
+      nextCellDownIndex = nextCellDownIndex + 3;
+  }
+  while (allCells[nextCellDownIndex].style.backgroundColor != "rgb(255, 255, 255)" && allCells[nextCellDownIndex].style.backgroundColor);
+  makeActiveCell(allCells[nextCellDownIndex]);
+}
+
+function jumpUpACell() {
+  var allCells = document.getElementsByTagName("td");
+  var nextCellDownIndex = parseInt(getKeyByValue(allCells,activeCell));
+  do {
+      nextCellDownIndex = nextCellDownIndex - 3;
+  }
+  while (allCells[nextCellDownIndex].style.backgroundColor != "rgb(255, 255, 255)" && allCells[nextCellDownIndex].style.backgroundColor);
+  makeActiveCell(allCells[nextCellDownIndex]);
+}
+
+function jumpLeftACell() {
+  var allCells = document.getElementsByTagName("td");
+  var nextCellDownIndex = parseInt(getKeyByValue(allCells,activeCell));
+  do {
+      nextCellDownIndex = nextCellDownIndex - 1;
+  }     // if the chosen cell has a color that isn't white, move on to the next cell in the register
+  while ( (allCells[nextCellDownIndex].style.backgroundColor != "rgb(255, 255, 255)" && allCells[nextCellDownIndex].style.backgroundColor) || allCells[nextCellDownIndex].className == 'presentColumn' );
+  makeActiveCell(allCells[nextCellDownIndex]);
+}
+
+function jumpRightACell() {
+  var allCells = document.getElementsByTagName("td");
+  var nextCellDownIndex = parseInt(getKeyByValue(allCells,activeCell));
+  do {
+      nextCellDownIndex = nextCellDownIndex + 1;
+  }     // if the chosen cell has a color that isn't white, move on to the next cell in the register
+  while ( (allCells[nextCellDownIndex].style.backgroundColor != "rgb(255, 255, 255)" && allCells[nextCellDownIndex].style.backgroundColor) || allCells[nextCellDownIndex].className == 'presentColumn' );
+  makeActiveCell(allCells[nextCellDownIndex]);
+}
+
+function changeColor(newColor) {
+    switch(newColor) {
+        case 'brown':
+            var x = document.getElementsByClassName("mainMenuButtonLeft");
+            for (var i = 0; i < x.length; i++) {
+                x[i].style.backgroundColor = "#CA8";
+            }
+            var y = document.getElementsByClassName("mainMenuButtonRight");
+            for (var i = 0; i < y.length; i++) {
+                y[i].style.backgroundColor = "#CA8";
+            }
+            document.getElementById("body").style.backgroundColor = "#E4DFDC";
+            break;
+        case 'green':
+            var x = document.getElementsByClassName("mainMenuButtonLeft");
+            for (var i = 0; i < x.length; i++) {
+                x[i].style.backgroundColor = "#A8D890";
+            }
+            var y = document.getElementsByClassName("mainMenuButtonRight");
+            for (var i = 0; i < y.length; i++) {
+                y[i].style.backgroundColor = "#A8D890";
+            }
+            document.getElementById("body").style.backgroundColor = "#DCFFD4";
+            break;
+        case 'blue':
+            var x = document.getElementsByClassName("mainMenuButtonLeft");
+            for (var i = 0; i < x.length; i++) {
+                x[i].style.backgroundColor = "#6BF";
+            }
+            var y = document.getElementsByClassName("mainMenuButtonRight");
+            for (var i = 0; i < y.length; i++) {
+                y[i].style.backgroundColor = "#6BF";
+            }
+            document.getElementById("body").style.backgroundColor = "#DFEFFF";
+            break;
+    }
+}
+
+$(document).unbind('keydown').bind('keydown', function (event) {
+
+    if (event.keyCode === 9) {    // if TAB key is pressed...
+
+        jumpToNextEmptyCell();
+
+        var doPrevent = true;
+        if (doPrevent) {
+            event.preventDefault();
+            return false;
+        }
+    }
+
+    if (event.keyCode === 40) {    // if DOWN key is pressed...
+
+        jumpDownACell();
+
+        var doPrevent = true;
+        if (doPrevent) {
+            event.preventDefault();
+            return false;
+        }
+    }
+
+    if (event.keyCode === 38) {    // if UP key is pressed...
+
+        jumpUpACell();
+
+        var doPrevent = true;
+        if (doPrevent) {
+            event.preventDefault();
+            return false;
+        }
+    }
+
+    if (event.keyCode === 37) {    // if LEFT key is pressed...
+
+        jumpLeftACell();
+
+        var doPrevent = true;
+        if (doPrevent) {
+            event.preventDefault();
+            return false;
+        }
+    }
+
+    if (event.keyCode === 39) {    // if RIGHT key is pressed...
+
+        jumpRightACell();
+
+        var doPrevent = true;
+        if (doPrevent) {
+            event.preventDefault();
+            return false;
+        }
+    }
+
+// The following prevents the backspace key from navigating backwards:
+    if (event.keyCode === 8) {    // dealing with backspace key
+        if (document.getElementById("completeChart").style.display == "block") {
+              whatToWriteIn = activeCell;
+        } else {
+              whatToWriteIn = document.getElementById("answerDiv");
+        }
+        if (document.getElementById("answerDiv").innerHTML.includes("✓")) {
+            document.getElementById("row2").innerHTML = document.getElementById("row2").innerHTML.slice(0,-1);
+        } else if (whatToWriteIn.innerHTML != "") {
+            whatToWriteIn.innerHTML = whatToWriteIn.innerHTML.slice(0,-1);
+        }
+        var doPrevent = true;
+        var types = ["text", "password", "file", "search", "email", "number", "date", "color", "datetime", "datetime-local", "month", "range", "search", "tel", "time", "url", "week"];
+        var d = $(event.srcElement || event.target);
+        var disabled = d.prop("readonly") || d.prop("disabled");
+        if (!disabled) {
+            if (d[0].isContentEditable) {
+                doPrevent = false;
+            } else if (d.is("input")) {
+                var type = d.attr("type");
+                if (type) {
+                    type = type.toLowerCase();
+                }
+                if (types.indexOf(type) > -1) {
+                    doPrevent = false;
+                }
+            } else if (d.is("textarea")) {
+                doPrevent = false;
+            }
+        }
+        if (doPrevent) {
+            event.preventDefault();
+            return false;
+        }
+    }
+});
+
+
+</script>
+
+<body id="body">
+<!-- <body onload="showAll()"> -->
+
+<div id="wholescreen">
+
+<div id="title">
+  Past and Past Participle Practice!
+</div>
+
+<div id="buttonJustPast" class="mainMenuButtonLeft" onclick="goDo(0)">
+  just past
+</div>
+
+<div id="buttonJustParticiple" class="mainMenuButtonLeft" onclick="goDo(1)">
+  just past participle
+</div>
+
+<div id="buttonBoth" class="mainMenuButtonLeft" onclick="goDo(2)">
+  past and past participle
+</div>
+
+<div id="buttonChart" class="mainMenuButtonRight" onclick="goChart()">
+  complete chart
+</div>
+
+<!-- <img id="homeMonkey1" src="img/other/homeMonkey1.gif"> -->
+
+<div id="questionDiv"></div>
+<div id="answerDiv"></div>
+<img id="animalPic" src="img/drive.png">
+
+<table id="completeChart">
+</table>
+
+<div id="exampleSentence"></div>
+
+<div id="brownButton" onclick="changeColor('brown')"></div>
+<div id="greenButton" onclick="changeColor('green')"></div>
+<div id="blueButton" onclick="changeColor('blue')"></div>
+
+</div> <!-- this is the WHOLESCREEN div -->
+
+
+
+
+</body>
+</html>
